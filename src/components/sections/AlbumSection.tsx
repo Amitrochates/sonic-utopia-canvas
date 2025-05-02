@@ -1,9 +1,7 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import AlbumCard from '../album/AlbumCard';
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 
 interface Album {
   id: string;
@@ -32,10 +30,12 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentAlbumIndex, setCurrentAlbumIndex] = useState(0);
+  const [isHorizontalScrolling, setIsHorizontalScrolling] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
+  const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | 'horizontal' | null>(null);
   
-  // Function to handle vertical scrolling
-  const handleVerticalScroll = (e: WheelEvent) => {
+  // Function to handle the wheel event for horizontal and vertical scrolling
+  const handleWheel = (e: WheelEvent) => {
     e.preventDefault();
     
     // Prevent rapid successive scrolls
@@ -48,36 +48,64 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
     
     // If we're at the first card and scrolling up, trigger vertical scroll up
     if (currentAlbumIndex === 0 && direction === 'up') {
+      setScrollDirection('up');
       onScrollUp && onScrollUp();
       return;
     }
     
     // If we're at the last card and scrolling down, trigger vertical scroll down
     if (currentAlbumIndex === albums.length - 1 && direction === 'down') {
+      setScrollDirection('down');
       onScrollDown && onScrollDown();
       return;
     }
+    
+    // Otherwise do horizontal scrolling
+    setScrollDirection('horizontal');
+    
+    if (direction === 'down') {
+      // Scroll right (next album)
+      setCurrentAlbumIndex(prev => Math.min(prev + 1, albums.length - 1));
+    } else {
+      // Scroll left (previous album)
+      setCurrentAlbumIndex(prev => Math.max(prev - 1, 0));
+    }
   };
   
-  // Handle album selection
-  const handleAlbumChange = (index: number) => {
-    setCurrentAlbumIndex(index);
-  };
-  
-  // Set up the vertical scrolling behavior
+  // Set up the scrolling behavior once we've entered this section
   useEffect(() => {
     const container = containerRef.current;
     
     if (container) {
-      container.addEventListener('wheel', handleVerticalScroll, { passive: false });
+      container.addEventListener('wheel', handleWheel, { passive: false });
     }
     
     return () => {
       if (container) {
-        container.removeEventListener('wheel', handleVerticalScroll);
+        container.removeEventListener('wheel', handleWheel);
       }
     };
-  }, [currentAlbumIndex, isScrolling]);
+  }, [isHorizontalScrolling, currentAlbumIndex, isScrolling]);
+  
+  // Enable horizontal scrolling when this section is in view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsHorizontalScrolling(entry.isIntersecting);
+      },
+      { threshold: 0.5 }
+    );
+    
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+    
+    return () => {
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div 
@@ -87,7 +115,7 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
         className
       )}
     >
-      {/* Background Videos */}
+      {/* Background Video */}
       {albums.map((album, index) => (
         <div 
           key={album.id}
@@ -104,47 +132,31 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
             loop
             playsInline
           />
-          <div className="absolute inset-0 bg-black bg-opacity-60" />
+          <div className="absolute inset-0 bg-black bg-opacity-50" />
         </div>
       ))}
       
       {/* Album Carousel */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <Carousel
-          opts={{
-            loop: false,
-            align: "center",
-          }}
-          className="w-full max-w-screen-xl"
-          onSlideChange={(api) => {
-            const currentSlide = api.selectedScrollSnap();
-            setCurrentAlbumIndex(currentSlide);
-          }}
+        <motion.div
+          className="flex items-center justify-center"
+          animate={{ x: -currentAlbumIndex * 100 + 'vw' }}
+          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         >
-          <CarouselContent>
-            {albums.map((album) => (
-              <CarouselItem 
-                key={album.id} 
-                className="flex items-center justify-center"
-              >
-                <AlbumCard
-                  id={album.id}
-                  title={album.title}
-                  coverImage={album.coverImage}
-                  streamingLinks={album.streamingLinks}
-                  backgroundImage={album.id === "album-1" 
-                    ? "/lovable-uploads/9aac2402-4e71-4dad-b49d-cd85ddb16260.png" 
-                    : album.id === "album-2" 
-                      ? "/lovable-uploads/5d4c074c-fb6a-430e-bbad-217015539f16.png" 
-                      : "/lovable-uploads/72692bca-c82a-4f19-ad9e-00576cd531a0.png"
-                  }
-                />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="left-10" />
-          <CarouselNext className="right-10" />
-        </Carousel>
+          {albums.map((album, index) => (
+            <div
+              key={album.id}
+              className="w-screen h-screen flex items-center justify-center flex-shrink-0"
+            >
+              <AlbumCard
+                id={album.id}
+                title={album.title}
+                coverImage={album.coverImage}
+                streamingLinks={album.streamingLinks}
+              />
+            </div>
+          ))}
+        </motion.div>
       </div>
       
       {/* Navigation Indicators */}
@@ -156,10 +168,35 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
               'w-3 h-3 rounded-full transition-all',
               index === currentAlbumIndex ? 'bg-white scale-125' : 'bg-white/50'
             )}
-            onClick={() => handleAlbumChange(index)}
+            onClick={() => setCurrentAlbumIndex(index)}
           />
         ))}
       </div>
+      
+      {/* Left/Right Arrows */}
+      <button
+        className={cn(
+          'absolute left-10 top-1/2 transform -translate-y-1/2 text-white',
+          'w-12 h-12 rounded-full bg-black/30 flex items-center justify-center',
+          'transition-opacity',
+          currentAlbumIndex === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        )}
+        onClick={() => setCurrentAlbumIndex(prev => Math.max(prev - 1, 0))}
+      >
+        <span className="text-2xl">&larr;</span>
+      </button>
+      
+      <button
+        className={cn(
+          'absolute right-10 top-1/2 transform -translate-y-1/2 text-white',
+          'w-12 h-12 rounded-full bg-black/30 flex items-center justify-center',
+          'transition-opacity',
+          currentAlbumIndex === albums.length - 1 ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        )}
+        onClick={() => setCurrentAlbumIndex(prev => Math.min(prev + 1, albums.length - 1))}
+      >
+        <span className="text-2xl">&rarr;</span>
+      </button>
       
       {/* Scroll indicators */}
       {currentAlbumIndex === 0 && (
