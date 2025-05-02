@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import ArtistLogo from '../artist/ArtistLogo';
-import CosmicGrainBackground from '../effects/CosmicGrainBackground';
+import PurpleStaticBackground from '../effects/PurpleStaticBackground';
 
 interface LogoSectionProps {
   logoSrc: string;
@@ -43,38 +43,18 @@ const LogoSection: React.FC<LogoSectionProps> = ({
       )}
       style={{ opacity }}
     >
-      {/* Cosmic grain background */}
-      <CosmicGrainBackground className="z-0" />
-      
-      {/* Background video with overlay */}
-      {backgroundVideoSrc && (
-        <div className="absolute inset-0 z-10">
-          <video
-            src={backgroundVideoSrc}
-            className="absolute inset-0 w-full h-full object-cover opacity-60"
-            autoPlay
-            muted
-            loop
-            playsInline
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/30 to-black/80 backdrop-blur-sm" />
-        </div>
-      )}
-      
-      {/* Glassmorphism panels */}
-      <div className="absolute w-full max-w-4xl h-1/2 rounded-3xl bg-white/5 backdrop-blur-sm z-20" />
-      <div className="absolute w-full max-w-3xl h-2/3 rounded-3xl bg-artist-purple-light/5 backdrop-blur-sm z-10" />
+      {/* Purple static background */}
+      <PurpleStaticBackground />
       
       {/* Logo with animation */}
       <motion.div
-        className="relative z-30"
+        className="relative z-10"
         style={{ scale }}
       >
         <ArtistLogo 
           src={logoSrc} 
           alt="Artist Logo" 
           onError={handleLogoError}
-          className="backdrop-blur-lg"
         />
         
         <motion.div 

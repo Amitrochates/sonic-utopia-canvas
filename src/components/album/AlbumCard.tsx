@@ -16,7 +16,6 @@ interface AlbumCardProps {
   title: string;
   coverImage: string;
   streamingLinks: StreamingLink[];
-  cosmicBackground?: string;
   className?: string;
 }
 
@@ -25,7 +24,6 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
   title,
   coverImage,
   streamingLinks,
-  cosmicBackground,
   className
 }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -48,7 +46,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
     <motion.div
       className={cn(
         'relative w-72 h-72 md:w-96 md:h-96 bg-artist-dark rounded-md overflow-hidden',
-        'shadow-lg transition-shadow hover:shadow-xl z-50',
+        'shadow-lg transition-shadow hover:shadow-xl',
         className
       )}
       layoutId={`album-${id}`}
@@ -58,24 +56,9 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
       transition={{ duration: 0.4 }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      style={{ 
-        boxShadow: '0 0 30px rgba(155, 135, 245, 0.3)'
-      }}
     >
-      {/* Cosmic overlay texture */}
-      {cosmicBackground && (
-        <div 
-          className="absolute inset-0 mix-blend-overlay opacity-75 z-10"
-          style={{
-            backgroundImage: `url(${cosmicBackground})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
-          }}
-        />
-      )}
-      
       {/* Album Cover Image */}
-      <div className="relative w-full h-full overflow-hidden z-0">
+      <div className="relative w-full h-full overflow-hidden">
         <motion.img
           src={coverImage}
           alt={title}
@@ -85,11 +68,11 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
           transition={{ duration: 0.3 }}
         />
 
-        {/* Glass overlay on hover */}
+        {/* Overlay on hover */}
         <AnimatePresence>
           {isHovered && (
             <motion.div
-              className="absolute inset-0 backdrop-blur-sm bg-black bg-opacity-60 flex items-center justify-center z-20"
+              className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -98,7 +81,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
               <motion.button
                 className={cn(
                   'px-6 py-3 rounded-full text-white font-bold transition-all',
-                  'bg-artist-secondary hover:bg-artist-accent backdrop-blur-md',
+                  'bg-artist-secondary hover:bg-artist-accent',
                   showLinks ? 'opacity-0' : 'opacity-100'
                 )}
                 whileHover={{ scale: 1.05 }}
@@ -124,7 +107,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center px-4 py-2 bg-white bg-opacity-10 backdrop-blur-md rounded-md hover:bg-opacity-20 transition-all"
+                        className="flex items-center justify-center px-4 py-2 bg-white bg-opacity-10 backdrop-blur-sm rounded-md hover:bg-opacity-20 transition-all"
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
@@ -151,7 +134,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({
       </div>
 
       {/* Album Title with text scramble effect */}
-      <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-4 z-30">
+      <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-4">
         <div className="text-white font-futuristic text-xl">
           <TextScramble 
             text={title} 

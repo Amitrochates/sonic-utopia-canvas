@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -73,44 +72,20 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
     }
   };
   
-  // Handle keyboard navigation
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (isScrolling) return;
-    
-    setIsScrolling(true);
-    setTimeout(() => setIsScrolling(false), 700);
-    
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-      if (currentAlbumIndex === albums.length - 1) {
-        onScrollDown && onScrollDown();
-      } else {
-        setCurrentAlbumIndex(prev => Math.min(prev + 1, albums.length - 1));
-      }
-    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-      if (currentAlbumIndex === 0) {
-        onScrollUp && onScrollUp();
-      } else {
-        setCurrentAlbumIndex(prev => Math.max(prev - 1, 0));
-      }
-    }
-  };
-  
   // Set up the scrolling behavior once we've entered this section
   useEffect(() => {
     const container = containerRef.current;
     
     if (container) {
       container.addEventListener('wheel', handleWheel, { passive: false });
-      window.addEventListener('keydown', handleKeyDown);
     }
     
     return () => {
       if (container) {
         container.removeEventListener('wheel', handleWheel);
-        window.removeEventListener('keydown', handleKeyDown);
       }
     };
-  }, [isHorizontalScrolling, currentAlbumIndex, isScrolling, albums.length]);
+  }, [isHorizontalScrolling, currentAlbumIndex, isScrolling]);
   
   // Enable horizontal scrolling when this section is in view
   useEffect(() => {
@@ -132,27 +107,15 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
     };
   }, []);
 
-  // Array of cosmic background textures for album cards
-  const cosmicBackgrounds = [
-    "/lovable-uploads/d94eba1c-b0ac-4278-8219-be410cc369d0.png",
-    "/lovable-uploads/8400c942-4813-4af0-81f2-ab5c2e797db1.png",
-    "/lovable-uploads/1d9cbd03-566f-4aa2-8e90-6800d4caa54c.png"
-  ];
-
   return (
     <div 
       ref={containerRef}
       className={cn(
-        'h-screen w-full fixed top-0 overflow-hidden',
-        isHorizontalScrolling ? 'z-30' : 'z-0',
+        'h-screen w-full overflow-hidden relative',
         className
       )}
-      style={{
-        pointerEvents: isHorizontalScrolling ? 'all' : 'none',
-        visibility: isHorizontalScrolling ? 'visible' : 'hidden',
-      }}
     >
-      {/* Background Videos - changed to fixed positioning for better performance */}
+      {/* Background Video */}
       {albums.map((album, index) => (
         <div 
           key={album.id}
@@ -160,7 +123,6 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
             'absolute inset-0 transition-opacity duration-1000',
             index === currentAlbumIndex ? 'opacity-100' : 'opacity-0'
           )}
-          style={{ zIndex: index === currentAlbumIndex ? 10 : 0 }}
         >
           <video
             src={album.backgroundVideo}
@@ -170,15 +132,12 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
             loop
             playsInline
           />
-          <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-20" />
+          <div className="absolute inset-0 bg-black bg-opacity-50" />
         </div>
       ))}
       
-      {/* Translucent overlay */}
-      <div className="absolute inset-0 backdrop-blur-[2px] bg-black/40 z-30"></div>
-      
       {/* Album Carousel */}
-      <div className="absolute inset-0 flex items-center justify-center z-40">
+      <div className="absolute inset-0 flex items-center justify-center">
         <motion.div
           className="flex items-center justify-center"
           animate={{ x: -currentAlbumIndex * 100 + 'vw' }}
@@ -194,7 +153,6 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
                 title={album.title}
                 coverImage={album.coverImage}
                 streamingLinks={album.streamingLinks}
-                cosmicBackground={cosmicBackgrounds[index % cosmicBackgrounds.length]}
               />
             </div>
           ))}
@@ -202,7 +160,7 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
       </div>
       
       {/* Navigation Indicators */}
-      <div className="absolute bottom-10 left-0 w-full flex items-center justify-center gap-2 z-50">
+      <div className="absolute bottom-10 left-0 w-full flex items-center justify-center gap-2">
         {albums.map((album, index) => (
           <button
             key={`nav-${album.id}`}
@@ -218,9 +176,9 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
       {/* Left/Right Arrows */}
       <button
         className={cn(
-          'absolute left-10 top-1/2 transform -translate-y-1/2 text-white z-50',
+          'absolute left-10 top-1/2 transform -translate-y-1/2 text-white',
           'w-12 h-12 rounded-full bg-black/30 flex items-center justify-center',
-          'transition-opacity backdrop-blur-sm',
+          'transition-opacity',
           currentAlbumIndex === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100'
         )}
         onClick={() => setCurrentAlbumIndex(prev => Math.max(prev - 1, 0))}
@@ -230,9 +188,9 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
       
       <button
         className={cn(
-          'absolute right-10 top-1/2 transform -translate-y-1/2 text-white z-50',
+          'absolute right-10 top-1/2 transform -translate-y-1/2 text-white',
           'w-12 h-12 rounded-full bg-black/30 flex items-center justify-center',
-          'transition-opacity backdrop-blur-sm',
+          'transition-opacity',
           currentAlbumIndex === albums.length - 1 ? 'opacity-0 pointer-events-none' : 'opacity-100'
         )}
         onClick={() => setCurrentAlbumIndex(prev => Math.min(prev + 1, albums.length - 1))}
@@ -242,7 +200,7 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
       
       {/* Scroll indicators */}
       {currentAlbumIndex === 0 && (
-        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 text-white opacity-60 animate-bounce z-50">
+        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 text-white opacity-60 animate-bounce">
           <div className="flex flex-col items-center">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 19L5 12L12 5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -253,7 +211,7 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({
       )}
       
       {currentAlbumIndex === albums.length - 1 && (
-        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-white opacity-60 animate-bounce z-50">
+        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-white opacity-60 animate-bounce">
           <div className="flex flex-col items-center">
             <span className="text-sm font-sans mb-1">SCROLL DOWN</span>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

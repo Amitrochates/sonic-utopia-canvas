@@ -7,7 +7,6 @@ import AlbumSection from '@/components/sections/AlbumSection';
 import FooterSection from '@/components/sections/FooterSection';
 import Header from '@/components/layout/Header';
 import { useScrollBehavior } from '@/hooks/use-scroll-behavior';
-import CosmicGrainBackground from '@/components/effects/CosmicGrainBackground';
 
 // Artist data
 const ARTIST_NAME = "AADHYARAJA";
@@ -16,7 +15,7 @@ const FOOTER_IMAGE = "/lovable-uploads/7a397af9-6f6e-46f7-bf4f-0004c5207859.png"
 // Fallback logo if the uploaded image is not available
 const FALLBACK_LOGO = "/lovable-uploads/placeholder-logo.svg"; 
 
-// Album data with space-themed backgrounds
+// Album data
 const ALBUMS = [
   {
     id: "album-1",
@@ -65,7 +64,6 @@ const HomePage = () => {
   
   const [showHeader, setShowHeader] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
-  const [showAlbumSection, setShowAlbumSection] = useState(false);
   
   const { scrollYProgress: introScrollProgress } = useScroll({
     target: introRef,
@@ -95,28 +93,21 @@ const HomePage = () => {
   const scrollToIntro = () => {
     introRef.current?.scrollIntoView({ behavior: 'smooth' });
     setActiveSection(0);
-    setShowAlbumSection(false);
   };
   
   const scrollToLogo = () => {
     logoSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
     setActiveSection(1);
-    setShowAlbumSection(false);
   };
   
   const scrollToAlbums = () => {
-    window.scrollTo({
-      top: window.innerHeight * 2,
-      behavior: 'smooth'
-    });
+    albumSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
     setActiveSection(2);
-    setShowAlbumSection(true);
   };
   
   const scrollToFooter = () => {
     footerSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
     setActiveSection(3);
-    setShowAlbumSection(false);
   };
   
   // Handle vertical scrolling from album section
@@ -128,29 +119,11 @@ const HomePage = () => {
     scrollToFooter();
   };
   
-  // Handle header visibility and section tracking
+  // Handle header visibility
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
-      const windowHeight = window.innerHeight;
-      
-      // Show header after scrolling past intro
-      setShowHeader(scrollPosition > windowHeight / 2);
-      
-      // Detect which section is in view
-      if (scrollPosition < windowHeight * 0.5) {
-        setActiveSection(0);
-        setShowAlbumSection(false);
-      } else if (scrollPosition < windowHeight * 1.5) {
-        setActiveSection(1);
-        setShowAlbumSection(false);
-      } else if (scrollPosition < windowHeight * 2.5) {
-        setActiveSection(2);
-        setShowAlbumSection(true);
-      } else {
-        setActiveSection(3);
-        setShowAlbumSection(false);
-      }
+      setShowHeader(scrollPosition > window.innerHeight / 2);
     };
     
     window.addEventListener('scroll', handleScroll);
@@ -163,7 +136,7 @@ const HomePage = () => {
       className="bg-black min-h-screen text-white overflow-x-hidden"
     >
       {/* Header */}
-      <Header className={showHeader ? 'opacity-100 z-50' : 'opacity-0 pointer-events-none'} />
+      <Header className={showHeader ? 'opacity-100' : 'opacity-0 pointer-events-none'} />
       
       {/* Artist Name - transitions to header on scroll */}
       {showHeader && (
@@ -173,19 +146,18 @@ const HomePage = () => {
         />
       )}
       
-      {/* Intro Section with Artist Name and cosmic grain background */}
+      {/* Intro Section with Artist Name */}
       <motion.div 
         ref={introRef}
         className="h-screen flex items-center justify-center relative"
         style={{ opacity: introOpacity, scale: introScale, y: introY }}
       >
-        <CosmicGrainBackground className="z-0" />
-        <div className="absolute inset-0 bg-gradient-to-b from-artist-dark via-transparent to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-artist-dark via-transparent to-transparent" />
         
-        <ArtistName name={ARTIST_NAME} className="z-20" />
+        <ArtistName name={ARTIST_NAME} />
         
         <motion.div 
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-30"
+          className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1, duration: 0.5 }}
@@ -199,7 +171,7 @@ const HomePage = () => {
             strokeWidth="2" 
             strokeLinecap="round" 
             strokeLinejoin="round"
-            className="animate-bounce cursor-pointer"
+            className="animate-bounce"
             onClick={scrollToLogo}
           >
             <path d="M7 13l5 5 5-5M7 6l5 5 5-5" />
@@ -207,57 +179,25 @@ const HomePage = () => {
         </motion.div>
       </motion.div>
       
-      {/* Logo Section with improved z-indexing */}
-      <div ref={logoSectionRef} className="relative z-20">
+      {/* Logo Section */}
+      <div ref={logoSectionRef}>
         <LogoSection 
           logoSrc={ARTIST_LOGO}
           backgroundVideoSrc="https://assets.mixkit.co/videos/preview/mixkit-woman-dancing-and-playing-with-digital-lights-32746-large.mp4"
         />
-        
-        {/* Navigation arrow to next section */}
-        <motion.div 
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-30"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-        >
-          <svg 
-            width="40" 
-            height="40" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
-            strokeLinejoin="round"
-            className="animate-bounce cursor-pointer"
-            onClick={scrollToAlbums}
-          >
-            <path d="M7 13l5 5 5-5M7 6l5 5 5-5" />
-          </svg>
-        </motion.div>
       </div>
       
-      {/* Placeholder for album section height */}
-      <div 
-        ref={albumSectionRef} 
-        className="h-screen"
-        style={{ 
-          position: 'relative',
-          zIndex: showAlbumSection ? 0 : 10 
-        }}
-      />
+      {/* Albums Section */}
+      <div ref={albumSectionRef}>
+        <AlbumSection 
+          albums={ALBUMS}
+          onScrollUp={handleScrollUpFromAlbums}
+          onScrollDown={handleScrollDownFromAlbums}
+        />
+      </div>
       
-      {/* Album Section with special positioning and z-indexing */}
-      <AlbumSection 
-        albums={ALBUMS}
-        onScrollUp={handleScrollUpFromAlbums}
-        onScrollDown={handleScrollDownFromAlbums}
-        className={activeSection === 2 ? 'z-30' : 'z-0'}
-      />
-      
-      {/* Footer Section with improved z-indexing */}
-      <div ref={footerSectionRef} className="relative z-20">
+      {/* Footer Section */}
+      <div ref={footerSectionRef}>
         <FooterSection 
           imageSrc={FOOTER_IMAGE}
         />
