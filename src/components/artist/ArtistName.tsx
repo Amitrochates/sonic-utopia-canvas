@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import SparkleEffect from '../effects/SparkleEffect';
 
 interface ArtistNameProps {
   name: string;
@@ -25,7 +26,7 @@ const ArtistName: React.FC<ArtistNameProps> = ({
     <motion.div 
       ref={containerRef}
       className={cn(
-        'relative z-10 flex items-center justify-center text-artist-light',
+        'relative z-20 flex items-center justify-center text-artist-light',
         isHeader ? 'fixed top-4 left-1/2 transform -translate-x-1/2' : 'w-full',
         className
       )}
@@ -34,19 +35,23 @@ const ArtistName: React.FC<ArtistNameProps> = ({
       transition={{ duration: 0.5 }}
       onMouseMove={onMouseMove}
     >
-      <span className="relative">
+      {/* Add sparkle effect behind the text */}
+      {!isHeader && <SparkleEffect className="opacity-70" />}
+      
+      <span className="relative z-10">
         {chars.map((char, index) => (
           <span
             key={`${char}-${index}`}
             className={cn(
-              'inline-block relative',
-              'font-display tracking-wider',
+              'inline-block relative mix-blend-normal',
+              'font-display tracking-wider text-white',
               isHeader ? 'text-3xl md:text-4xl' : 'text-6xl md:text-8xl lg:text-9xl',
               char === ' ' ? 'mx-2' : ''
             )}
             style={{ 
               animationDelay: `${index * 0.1}s`,
-              animationDuration: `${2 + Math.random() * 2}s`
+              animationDuration: `${2 + Math.random() * 2}s`,
+              textShadow: isHeader ? 'none' : '0 0 15px rgba(255,255,255,0.5)'
             }}
           >
             {char}
