@@ -3,6 +3,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import ArtistLogo from '../artist/ArtistLogo';
+import PurpleStaticBackground from '../effects/PurpleStaticBackground';
 
 interface LogoSectionProps {
   logoSrc: string;
@@ -42,22 +43,10 @@ const LogoSection: React.FC<LogoSectionProps> = ({
       )}
       style={{ opacity }}
     >
-      {/* Background video if provided */}
-      {backgroundVideoSrc && (
-        <div className="absolute inset-0">
-          <video
-            src={backgroundVideoSrc}
-            className="absolute inset-0 w-full h-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-          />
-          <div className="absolute inset-0 bg-black bg-opacity-70" />
-        </div>
-      )}
+      {/* Purple static background */}
+      <PurpleStaticBackground />
       
-      {/* Artist Logo with animation */}
+      {/* Logo with animation */}
       <motion.div
         className="relative z-10"
         style={{ scale }}
@@ -69,13 +58,13 @@ const LogoSection: React.FC<LogoSectionProps> = ({
         />
         
         <motion.div 
-          className="mt-8 text-white text-2xl font-futuristic text-center"
+          className="mt-8 text-white text-2xl font-sans text-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <span>EXPLORE</span>
-          <h2 className="text-4xl md:text-5xl font-display tracking-wider mt-2">UTOPIA WORLD</h2>
+          <span className="uppercase">EXPLORE</span>
+          <h2 className="text-4xl md:text-5xl font-sans uppercase tracking-wider mt-2">UTOPIA WORLD</h2>
         </motion.div>
       </motion.div>
     </motion.div>

@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -67,12 +68,18 @@ export default {
 					secondary: '#9b87f5',
 					accent: '#D946EF',
 					dark: '#121212',
-					light: '#ffffff'
+					light: '#ffffff',
+					purple: {
+						light: '#9b87f5',
+						DEFAULT: '#7E69AB',
+						dark: '#6E59A5',
+						vivid: '#8B5CF6'
+					}
 				}
 			},
 			fontFamily: {
-				sans: ['Inter', 'sans-serif'],
-				display: ['Anton', 'sans-serif'],
+				sans: ['Oswald', 'sans-serif'],
+				display: ['Plaster', 'cursive'],
 				graffiti: ['Permanent Marker', 'cursive'],
 				futuristic: ['Orbitron', 'sans-serif']
 			},
@@ -125,6 +132,10 @@ export default {
 					'60%': { transform: 'translate(5px, 5px)' },
 					'80%': { transform: 'translate(5px, -5px)' },
 					'100%': { transform: 'translate(0)' }
+				},
+				'tv-static': {
+					'0%, 100%': { opacity: '0.3' },
+					'50%': { opacity: '0.7' }
 				}
 			},
 			animation: {
@@ -137,7 +148,8 @@ export default {
 				'slide-down': 'slide-down 0.5s ease-out',
 				'fade-in': 'fade-in 0.5s ease-out',
 				'scale-in': 'scale-in 0.5s ease-out',
-				'glitch': 'glitch 0.5s ease-in-out infinite'
+				'glitch': 'glitch 0.5s ease-in-out infinite',
+				'tv-static': 'tv-static 3s ease-in-out infinite'
 			}
 		}
 	},

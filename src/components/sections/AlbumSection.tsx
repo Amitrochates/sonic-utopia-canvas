@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -19,20 +18,52 @@ interface Album {
 interface AlbumSectionProps {
   albums: Album[];
   className?: string;
+  onScrollUp?: () => void;
+  onScrollDown?: () => void;
 }
 
-const AlbumSection: React.FC<AlbumSectionProps> = ({ albums, className }) => {
+const AlbumSection: React.FC<AlbumSectionProps> = ({ 
+  albums, 
+  className,
+  onScrollUp,
+  onScrollDown
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentAlbumIndex, setCurrentAlbumIndex] = useState(0);
   const [isHorizontalScrolling, setIsHorizontalScrolling] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | 'horizontal' | null>(null);
   
-  // Function to handle the wheel event for horizontal scrolling
+  // Function to handle the wheel event for horizontal and vertical scrolling
   const handleWheel = (e: WheelEvent) => {
-    if (!isHorizontalScrolling) return;
-    
     e.preventDefault();
     
-    if (e.deltaY > 0) {
+    // Prevent rapid successive scrolls
+    if (isScrolling) return;
+    
+    setIsScrolling(true);
+    setTimeout(() => setIsScrolling(false), 700); // Debounce the scroll
+    
+    const direction = e.deltaY > 0 ? 'down' : 'up';
+    
+    // If we're at the first card and scrolling up, trigger vertical scroll up
+    if (currentAlbumIndex === 0 && direction === 'up') {
+      setScrollDirection('up');
+      onScrollUp && onScrollUp();
+      return;
+    }
+    
+    // If we're at the last card and scrolling down, trigger vertical scroll down
+    if (currentAlbumIndex === albums.length - 1 && direction === 'down') {
+      setScrollDirection('down');
+      onScrollDown && onScrollDown();
+      return;
+    }
+    
+    // Otherwise do horizontal scrolling
+    setScrollDirection('horizontal');
+    
+    if (direction === 'down') {
       // Scroll right (next album)
       setCurrentAlbumIndex(prev => Math.min(prev + 1, albums.length - 1));
     } else {
@@ -41,7 +72,7 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({ albums, className }) => {
     }
   };
   
-  // Set up the horizontal scrolling once we've entered this section
+  // Set up the scrolling behavior once we've entered this section
   useEffect(() => {
     const container = containerRef.current;
     
@@ -54,7 +85,7 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({ albums, className }) => {
         container.removeEventListener('wheel', handleWheel);
       }
     };
-  }, [isHorizontalScrolling]);
+  }, [isHorizontalScrolling, currentAlbumIndex, isScrolling]);
   
   // Enable horizontal scrolling when this section is in view
   useEffect(() => {
@@ -166,6 +197,29 @@ const AlbumSection: React.FC<AlbumSectionProps> = ({ albums, className }) => {
       >
         <span className="text-2xl">&rarr;</span>
       </button>
+      
+      {/* Scroll indicators */}
+      {currentAlbumIndex === 0 && (
+        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 text-white opacity-60 animate-bounce">
+          <div className="flex flex-col items-center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 19L5 12L12 5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            <span className="text-sm font-sans mt-1">SCROLL UP</span>
+          </div>
+        </div>
+      )}
+      
+      {currentAlbumIndex === albums.length - 1 && (
+        <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 text-white opacity-60 animate-bounce">
+          <div className="flex flex-col items-center">
+            <span className="text-sm font-sans mb-1">SCROLL DOWN</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 5L19 12L12 19" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

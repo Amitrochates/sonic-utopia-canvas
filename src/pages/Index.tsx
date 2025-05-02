@@ -1,19 +1,21 @@
 
 import React, { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import ArtistName from '@/components/artist/ArtistName';
 import LogoSection from '@/components/sections/LogoSection';
 import AlbumSection from '@/components/sections/AlbumSection';
+import FooterSection from '@/components/sections/FooterSection';
 import Header from '@/components/layout/Header';
 import { useScrollBehavior } from '@/hooks/use-scroll-behavior';
 
-// Mock data - replace with actual artist data
-const ARTIST_NAME = "SONIC UTOPIA";
-const ARTIST_LOGO = "/lovable-uploads/9df457c5-f17a-4283-abc8-4f4e5b017e11.png"; 
+// Artist data
+const ARTIST_NAME = "AADHYARAJA";
+const ARTIST_LOGO = "/lovable-uploads/6999f15a-2344-456e-a1fd-d12a22c72ec1.png";
+const FOOTER_IMAGE = "/lovable-uploads/7a397af9-6f6e-46f7-bf4f-0004c5207859.png";
 // Fallback logo if the uploaded image is not available
 const FALLBACK_LOGO = "/lovable-uploads/placeholder-logo.svg"; 
 
-// Mock album data - replace with actual albums
+// Album data
 const ALBUMS = [
   {
     id: "album-1",
@@ -58,14 +60,13 @@ const HomePage = () => {
   const introRef = useRef<HTMLDivElement>(null);
   const logoSectionRef = useRef<HTMLDivElement>(null);
   const albumSectionRef = useRef<HTMLDivElement>(null);
+  const footerSectionRef = useRef<HTMLDivElement>(null);
   
   const [showHeader, setShowHeader] = useState(false);
+  const [activeSection, setActiveSection] = useState(0);
+  
   const { scrollYProgress: introScrollProgress } = useScroll({
     target: introRef,
-    offset: ["start end", "end start"]
-  });
-  const { scrollYProgress: logoScrollProgress } = useScroll({
-    target: logoSectionRef,
     offset: ["start end", "end start"]
   });
   
@@ -87,6 +88,36 @@ const HomePage = () => {
     [0, 0.5], 
     [0, -100]
   );
+  
+  // Scroll to sections
+  const scrollToIntro = () => {
+    introRef.current?.scrollIntoView({ behavior: 'smooth' });
+    setActiveSection(0);
+  };
+  
+  const scrollToLogo = () => {
+    logoSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+    setActiveSection(1);
+  };
+  
+  const scrollToAlbums = () => {
+    albumSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+    setActiveSection(2);
+  };
+  
+  const scrollToFooter = () => {
+    footerSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+    setActiveSection(3);
+  };
+  
+  // Handle vertical scrolling from album section
+  const handleScrollUpFromAlbums = () => {
+    scrollToLogo();
+  };
+  
+  const handleScrollDownFromAlbums = () => {
+    scrollToFooter();
+  };
   
   // Handle header visibility
   useEffect(() => {
@@ -141,6 +172,7 @@ const HomePage = () => {
             strokeLinecap="round" 
             strokeLinejoin="round"
             className="animate-bounce"
+            onClick={scrollToLogo}
           >
             <path d="M7 13l5 5 5-5M7 6l5 5 5-5" />
           </svg>
@@ -159,6 +191,15 @@ const HomePage = () => {
       <div ref={albumSectionRef}>
         <AlbumSection 
           albums={ALBUMS}
+          onScrollUp={handleScrollUpFromAlbums}
+          onScrollDown={handleScrollDownFromAlbums}
+        />
+      </div>
+      
+      {/* Footer Section */}
+      <div ref={footerSectionRef}>
+        <FooterSection 
+          imageSrc={FOOTER_IMAGE}
         />
       </div>
     </div>
