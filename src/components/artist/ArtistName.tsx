@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
@@ -18,9 +18,6 @@ const ArtistName: React.FC<ArtistNameProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   
-  // Split name into individual characters for the glitter effect
-  const chars = name.split('');
-  
   return (
     <motion.div 
       ref={containerRef}
@@ -34,32 +31,17 @@ const ArtistName: React.FC<ArtistNameProps> = ({
       transition={{ duration: 0.5 }}
       onMouseMove={onMouseMove}
     >
-      <span className="relative">
-        {chars.map((char, index) => (
+      <span className="relative font-display tracking-wider">
+        {name.split('').map((char, index) => (
           <span
             key={`${char}-${index}`}
             className={cn(
-              'inline-block relative',
-              'font-display tracking-wider',
+              'inline-block',
               isHeader ? 'text-3xl md:text-4xl' : 'text-6xl md:text-8xl lg:text-9xl',
               char === ' ' ? 'mx-2' : ''
             )}
-            style={{ 
-              animationDelay: `${index * 0.1}s`,
-              animationDuration: `${2 + Math.random() * 2}s`
-            }}
           >
             {char}
-            <span 
-              className="absolute top-0 left-0 w-full h-full animate-glitter opacity-0"
-              style={{ 
-                animationDelay: `${index * 0.1}s`,
-                background: 'linear-gradient(225deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0) 100%)',
-                mixBlendMode: 'overlay'
-              }}
-            >
-              {char}
-            </span>
           </span>
         ))}
       </span>
