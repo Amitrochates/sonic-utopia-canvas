@@ -183,7 +183,8 @@ const HomePage = () => {
       <div ref={logoSectionRef}>
         <LogoSection 
           logoSrc={ARTIST_LOGO}
-          backgroundVideoSrc="https://assets.mixkit.co/videos/preview/mixkit-woman-dancing-and-playing-with-digital-lights-32746-large.mp4"
+          // backgroundVideoSrc="https://assets.mixkit.co/videos/preview/mixkit-woman-dancing-and-playing-with-digital-lights-32746-large.mp4"
+          // backgroundVideoSrc="./public/bg_glitch.mp4"
         />
       </div>
       
@@ -191,8 +192,8 @@ const HomePage = () => {
       <div ref={albumSectionRef}>
         <AlbumSection 
           albums={ALBUMS}
-          onScrollUp={handleScrollUpFromAlbums}
-          onScrollDown={handleScrollDownFromAlbums}
+          // onScrollUp={handleScrollUpFromAlbums}
+          // onScrollDown={handleScrollDownFromAlbums}
         />
       </div>
       

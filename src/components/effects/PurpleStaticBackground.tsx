@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -7,83 +6,116 @@ interface PurpleStaticBackgroundProps {
   className?: string;
 }
 
-const PurpleStaticBackground: React.FC<PurpleStaticBackgroundProps> = ({ className }) => {
+const NeonVHSStatic: React.FC<PurpleStaticBackgroundProps> = ({ className }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
+
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    
-    // Set canvas dimensions to match parent
+
     const resizeCanvas = () => {
       canvas.width = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
     };
-    
+
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
-    
-    // Create TV static effect with purple hues
+
+    let animationId: number;
+
     const drawStatic = () => {
-      // Clear canvas
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const { width, height } = canvas;
+      const baseImage = ctx.createImageData(width, height);
+      const buffer = baseImage.data;
+
+      // Step 1: Fill with noisy neon static
+      for (let i = 0; i < buffer.length; i += 4) {
+        const glitch = Math.random();
+        let r = 0, g = 0, b = 0;
       
-      // Draw static
-      for (let x = 0; x < canvas.width; x += 4) {
-        for (let y = 0; y < canvas.height; y += 4) {
-          const intensity = Math.random();
-          
-          if (intensity > 0.96) {
-            // Bright purple dots
-            ctx.fillStyle = `rgba(155, 135, 245, ${intensity})`;
-            ctx.fillRect(x, y, 4, 4);
-          } else if (intensity > 0.93) {
-            // Medium purple dots
-            ctx.fillStyle = `rgba(139, 92, 246, ${intensity * 0.7})`;
-            ctx.fillRect(x, y, 3, 3);
-          } else if (intensity > 0.90) {
-            // Dark purple dots
-            ctx.fillStyle = `rgba(110, 89, 165, ${intensity * 0.5})`;
-            ctx.fillRect(x, y, 2, 2);
-          } else if (intensity > 0.85) {
-            // Subtle pink dots
-            ctx.fillStyle = `rgba(217, 70, 239, ${intensity * 0.3})`;
-            ctx.fillRect(x, y, 2, 2);
-          }
+        if (glitch > 0.98) {
+          r = 200 + 55 * Math.random(); // bright RGB burst
+          g = 200 + 55 * Math.random();
+          b = 200 + 55 * Math.random();
+        } else if (glitch > 0.94) {
+          r = 180 + Math.random() * 75;
+          g = 50;
+          b = 255;
+        } else if (glitch > 0.9) {
+          r = 50 + Math.random() * 80;
+          g = 255;
+          b = 80 + Math.random() * 80;
+        } else {
+          const grey = 50 + Math.random() * 80; // brighter base noise
+          r = g = b = grey;
         }
+      
+        buffer[i] = r;
+        buffer[i + 1] = g;
+        buffer[i + 2] = b;
+        buffer[i + 3] = 180 + Math.random() * 50; // alpha 180–230
       }
       
-      // Create horizontal scan lines
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-      for (let y = 0; y < canvas.height; y += 8) {
-        ctx.fillRect(0, y, canvas.width, 1);
+
+      // Step 2: Draw base static first
+      ctx.putImageData(baseImage, 0, 0);
+
+      // Step 3: Create RGB channel shifts
+      const redShift = ctx.createImageData(width, height);
+      const greenShift = ctx.createImageData(width, height);
+      const blueShift = ctx.createImageData(width, height);
+
+      for (let i = 0; i < buffer.length; i += 4) {
+        redShift.data[i] = buffer[i];
+        redShift.data[i + 1] = 0;
+        redShift.data[i + 2] = 0;
+        redShift.data[i + 3] = 60;
+
+        greenShift.data[i] = 0;
+        greenShift.data[i + 1] = buffer[i + 1];
+        greenShift.data[i + 2] = 0;
+        greenShift.data[i + 3] = 60;
+
+        blueShift.data[i] = 0;
+        blueShift.data[i + 1] = 0;
+        blueShift.data[i + 2] = buffer[i + 2];
+        blueShift.data[i + 3] = 60;
       }
-      
-      requestAnimationFrame(drawStatic);
+
+      // Step 4: Offset and blend channels (like chromatic ghosting)
+      ctx.putImageData(redShift, -1, 0);
+      ctx.putImageData(greenShift, 0, 1);
+      ctx.putImageData(blueShift, 1, 0);
+
+      // Step 5: Optional glitch bars
+      for (let y = 0; y < height; y += Math.floor(Math.random() * 60 + 30)) {
+        const glitchHeight = Math.floor(Math.random() * 4 + 1);
+        ctx.fillStyle = `rgba(${255 * Math.random()}, ${255 * Math.random()}, ${255 * Math.random()}, 0.07)`;
+        ctx.fillRect(0, y, width, glitchHeight);
+      }
+
+      animationId = requestAnimationFrame(drawStatic);
     };
-    
-    const animationId = requestAnimationFrame(drawStatic);
-    
+
+    animationId = requestAnimationFrame(drawStatic);
+
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
       cancelAnimationFrame(animationId);
+      window.removeEventListener('resize', resizeCanvas);
     };
   }, []);
-  
+
   return (
     <div className={cn('absolute inset-0 overflow-hidden z-0', className)}>
-      <canvas 
-        ref={canvasRef} 
-        className="w-full h-full opacity-60"
-      />
-      <motion.div 
-        className="absolute inset-0 bg-gradient-radial from-artist-purple-vivid/20 via-artist-purple/10 to-black/50 animate-tv-static"
-      />
+      <canvas ref={canvasRef} className="w-full h-full opacity-80" />
+      <motion.div
+  className="absolute inset-0 bg-gradient-radial from-purple-900/20 via-indigo-900/10 to-black/90 z-[-1]"
+  />
     </div>
   );
 };
 
-export default PurpleStaticBackground;
+export default NeonVHSStatic;

@@ -4,6 +4,36 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes tv-static {    
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-1px); }
+  100% { transform: translateY(0); }
+}
+
+.animate-tv-static {
+  animation: tv-static 0.15s infinite;
+}
+@keyframes vhs-glitch {
+  0%, 100% { transform: translate(0, 0); opacity: 1; }
+  33% { transform: translate(-2px, 1px); opacity: 0.95; }
+  66% { transform: translate(1px, -1px); opacity: 0.9; }
+}
+
+.animate-vhs-glitch {
+  animation: vhs-glitch 0.12s infinite;
+  background: linear-gradient(to right, transparent, rgba(255, 0, 255, 0.05), transparent);
+}
+
+@keyframes scanline-flicker {
+  0%, 100% { opacity: 0.1; transform: translateY(0); }
+  50% { opacity: 0.2; transform: translateY(-1px); }
+}
+
+.animate-scanline-flicker {
+  animation: scanline-flicker 0.12s infinite;
+}
+
+
 @layer base {
   :root {
     --background: 0 0% 100%;

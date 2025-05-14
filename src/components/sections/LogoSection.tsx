@@ -4,16 +4,17 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import ArtistLogo from '../artist/ArtistLogo';
 import PurpleStaticBackground from '../effects/PurpleStaticBackground';
+import NeonVHSStatic from '../effects/PurpleStaticBackground';
 
 interface LogoSectionProps {
   logoSrc: string;
-  backgroundVideoSrc?: string;
+  // backgroundVideoSrc?: string;
   className?: string;
 }
 
 const LogoSection: React.FC<LogoSectionProps> = ({ 
   logoSrc,
-  backgroundVideoSrc,
+  // backgroundVideoSrc,
   className 
 }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -44,8 +45,8 @@ const LogoSection: React.FC<LogoSectionProps> = ({
       style={{ opacity }}
     >
       {/* Purple static background */}
-      <PurpleStaticBackground />
-      
+      {/* <PurpleStaticBackground /> */}
+      <NeonVHSStatic/>
       {/* Logo with animation */}
       <motion.div
         className="relative z-10"
@@ -64,7 +65,7 @@ const LogoSection: React.FC<LogoSectionProps> = ({
           transition={{ delay: 0.5 }}
         >
           <span className="uppercase">EXPLORE</span>
-          <h2 className="text-4xl md:text-5xl font-sans uppercase tracking-wider mt-2">UTOPIA WORLD</h2>
+          <h2 className="text-4xl md:text-5xl font-sans uppercase tracking-wider mt-2">AadhyaRaja's World</h2>
         </motion.div>
       </motion.div>
     </motion.div>
