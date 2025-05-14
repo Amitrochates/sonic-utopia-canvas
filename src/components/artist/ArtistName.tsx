@@ -16,32 +16,6 @@ const ArtistName: React.FC<ArtistNameProps> = ({
   isHeader = false,
   variant = 'default'
 }) => {
-  // Animation variants for the container
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.05,
-        when: "beforeChildren"
-      }
-    }
-  };
-  
-  // Animation variants for each letter
-  const letterVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { 
-        type: "spring",
-        stiffness: 100,
-        mass: 1
-      }
-    }
-  };
-  
   // Font size class based on variant
   const sizeClass = {
     'default': 'text-4xl md:text-6xl lg:text-8xl',
@@ -57,22 +31,11 @@ const ArtistName: React.FC<ArtistNameProps> = ({
         isHeader ? 'mb-0' : 'mb-8',
         className
       )}
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
     >
-      {Array.from(name).map((letter, index) => (
-        <motion.span
-          key={`${letter}-${index}`}
-          variants={letterVariants}
-          className={cn(
-            'inline-block',
-            letter === ' ' ? 'mr-3' : ''
-          )}
-        >
-          {letter}
-        </motion.span>
-      ))}
+      {name}
     </motion.h1>
   );
 };

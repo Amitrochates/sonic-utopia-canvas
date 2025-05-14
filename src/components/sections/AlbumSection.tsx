@@ -2,7 +2,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import AlbumCard from '../album/AlbumCard';
 import Carousel from '../ui/carousel';
 
 interface Album {
