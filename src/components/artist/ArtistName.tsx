@@ -1,43 +1,82 @@
-
-import React from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { Vortex } from '../ui/vortex';
+
 
 interface ArtistNameProps {
   name: string;
   className?: string;
   isHeader?: boolean;
-  variant?: 'default' | 'large' | 'small';
+  onMouseMove?: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 const ArtistName: React.FC<ArtistNameProps> = ({ 
-  name,
-  className,
+  name, 
+  className, 
   isHeader = false,
-  variant = 'default'
+  onMouseMove
 }) => {
-  // Font size class based on variant
-  const sizeClass = {
-    'default': 'text-4xl md:text-6xl lg:text-8xl',
-    'large': 'text-5xl md:text-7xl lg:text-9xl',
-    'small': 'text-2xl md:text-3xl'
-  }[variant];
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Split name into individual characters for the glitter effect
+  const chars = name.split('');
   
   return (
-    <motion.h1
+    <motion.div 
+      ref={containerRef}
       className={cn(
-        sizeClass,
-        'font-extrabold tracking-wider text-white',
-        isHeader ? 'mb-0' : 'mb-8',
+        'relative flex items-center justify-center text-artist-light',
+        isHeader 
+          ? 'fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-auto text-center' 
+          : 'w-full z-10',
         className
       )}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={isHeader ? { y: -100, opacity: 0 } : { y: 0, opacity: 1 }}
+      animate={isHeader ? { y: 0, opacity: 1 } : { y: 0, opacity: 1 }}
       transition={{ duration: 0.5 }}
+      onMouseMove={onMouseMove}
     >
-      {name}
-    </motion.h1>
+      {/* Only render Vortex when NOT in header mode */}
+      {!isHeader && (
+        <div className="absolute inset-0 -z-10">
+          <Vortex className="opacity-100" />
+        </div>
+      )}
+      
+      <div className={cn(
+        isHeader ? 'text-center' : ''
+      )}>
+        {chars.map((char, index) => (
+          <span
+            key={`${char}-${index}`}
+            className={cn(
+              'inline-block relative',
+              'font-display tracking-wider',
+              isHeader ? 'text-3xl md:text-4xl' : 'text-6xl md:text-8xl lg:text-9xl',
+              char === ' ' ? 'mx-2' : ''
+            )}
+            style={{ 
+              animationDelay: `${index * 0.1}s`,
+              animationDuration: `${2 + Math.random() * 2}s`
+            }}
+          >
+            {char}
+            <span 
+              className={cn(
+                "absolute top-0 left-0 w-full h-full animate-glitter opacity-0",
+                "mix-blend-overlay" // Use Tailwind class instead of style
+              )}
+              style={{ 
+                animationDelay: `${index * 0.1}s`
+              }}
+            >
+              {char}
+            </span>
+          </span>
+        ))}
+      </div>
+    </motion.div>
   );
-};
-
+}
 export default ArtistName;

@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
 interface HeaderProps {
@@ -11,17 +12,14 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
   return (
     <motion.header
       className={cn(
-        'fixed top-0 left-0 w-full z-50 p-4 transition-opacity duration-500',
+        'fixed top-0 left-0 w-full flex items-center justify-between py-4 z-50',
+        'bg-gradient-to-b from-black/80 to-transparent',
         className
       )}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ delay: 0.2, duration: 0.5 }}
     >
-      <div className="flex items-center justify-center">
-        <div className="flex-1"></div>
-        <h1 className="text-white text-2xl font-bold flex-1 text-center">AADHYARAJA</h1>
-        <div className="flex-1"></div>
-      </div>
     </motion.header>
   );
 };
