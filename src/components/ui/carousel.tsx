@@ -1,3 +1,4 @@
+
 "use client";
 import { IconArrowNarrowRight } from "@tabler/icons-react";
 import { useState, useRef, useId, useEffect } from "react";
@@ -68,7 +69,7 @@ const Slide = ({ slide, index, current, handleSlideClick }: SlideProps) => {
     <div className="[perspective:1200px] [transform-style:preserve-3d]">
       <li
         ref={slideRef}
-        className="flex flex-1 flex-col items-center justify-center relative text-center text-white opacity-100 transition-all duration-300 ease-in-out w-[70vmin] h-[70vmin] mx-[4vmin] z-10 "
+        className="flex flex-1 flex-col items-center justify-center relative text-center text-white opacity-100 transition-all duration-300 ease-in-out w-[50vmin] h-[50vmin] mx-[10vmin] z-10 "
         onClick={() => handleSlideClick(index)}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
@@ -151,24 +152,30 @@ const CarouselControl = ({
 
 interface CarouselProps {
   slides: SlideData[];
+  onSlideChange?: (index: number) => void;
 }
 
-export default function Carousel({ slides }: CarouselProps) {
+export default function Carousel({ slides, onSlideChange }: CarouselProps) {
   const [current, setCurrent] = useState(0);
 
   const handlePreviousClick = () => {
     const previous = current - 1;
-    setCurrent(previous < 0 ? slides.length - 1 : previous);
+    const newIndex = previous < 0 ? slides.length - 1 : previous;
+    setCurrent(newIndex);
+    if (onSlideChange) onSlideChange(newIndex);
   };
 
   const handleNextClick = () => {
     const next = current + 1;
-    setCurrent(next === slides.length ? 0 : next);
+    const newIndex = next === slides.length ? 0 : next;
+    setCurrent(newIndex);
+    if (onSlideChange) onSlideChange(newIndex);
   };
 
   const handleSlideClick = (index: number) => {
     if (current !== index) {
       setCurrent(index);
+      if (onSlideChange) onSlideChange(index);
     }
   };
 
@@ -176,11 +183,11 @@ export default function Carousel({ slides }: CarouselProps) {
 
   return (
     <div
-      className="relative w-[70vmin] h-[70vmin] mx-auto"
+      className="relative w-[50vmin] h-[50vmin] mx-auto"
       aria-labelledby={`carousel-heading-${id}`}
     >
       <ul
-        className="absolute flex mx-[-4vmin] transition-transform duration-1000 ease-in-out"
+        className="absolute flex mx-[-10vmin] transition-transform duration-1000 ease-in-out"
         style={{
           transform: `translateX(-${current * (100 / slides.length)}%)`,
         }}

@@ -20,6 +20,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
       animate={{ y: 0 }}
       transition={{ delay: 0.2, duration: 0.5 }}
     >
+      {/* Header content will be added by ArtistName component when isHeader is true */}
     </motion.header>
   );
 };

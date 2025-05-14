@@ -1,3 +1,4 @@
+
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -28,7 +29,7 @@ const ArtistName: React.FC<ArtistNameProps> = ({
       className={cn(
         'relative flex items-center justify-center text-artist-light',
         isHeader 
-          ? 'fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-auto text-center' 
+          ? 'fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-full text-center' 
           : 'w-full z-10',
         className
       )}
@@ -45,7 +46,8 @@ const ArtistName: React.FC<ArtistNameProps> = ({
       )}
       
       <div className={cn(
-        isHeader ? 'text-center' : ''
+        'text-center',
+        isHeader ? 'w-full mx-auto' : ''
       )}>
         {chars.map((char, index) => (
           <span
