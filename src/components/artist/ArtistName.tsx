@@ -1,82 +1,80 @@
-import React, { useRef } from 'react';
+
+import React from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { Vortex } from '../ui/vortex';
-
 
 interface ArtistNameProps {
   name: string;
   className?: string;
   isHeader?: boolean;
-  onMouseMove?: (event: React.MouseEvent<HTMLDivElement>) => void;
+  variant?: 'default' | 'large' | 'small';
 }
 
 const ArtistName: React.FC<ArtistNameProps> = ({ 
-  name, 
-  className, 
+  name,
+  className,
   isHeader = false,
-  onMouseMove
+  variant = 'default'
 }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  // Animation variants for the container
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05,
+        when: "beforeChildren"
+      }
+    }
+  };
   
-  // Split name into individual characters for the glitter effect
-  const chars = name.split('');
+  // Animation variants for each letter
+  const letterVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { 
+        type: "spring",
+        stiffness: 100,
+        mass: 1
+      }
+    }
+  };
+  
+  // Font size class based on variant
+  const sizeClass = {
+    'default': 'text-4xl md:text-6xl lg:text-8xl',
+    'large': 'text-5xl md:text-7xl lg:text-9xl',
+    'small': 'text-2xl md:text-3xl'
+  }[variant];
   
   return (
-    <motion.div 
-      ref={containerRef}
+    <motion.h1
       className={cn(
-        'relative flex items-center justify-center text-artist-light',
-        isHeader 
-          ? 'fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-auto text-center' 
-          : 'w-full z-10',
+        sizeClass,
+        'font-extrabold tracking-wider text-white',
+        isHeader ? 'mb-0' : 'mb-8',
         className
       )}
-      initial={isHeader ? { y: -100, opacity: 0 } : { y: 0, opacity: 1 }}
-      animate={isHeader ? { y: 0, opacity: 1 } : { y: 0, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      onMouseMove={onMouseMove}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
     >
-      {/* Only render Vortex when NOT in header mode */}
-      {!isHeader && (
-        <div className="absolute inset-0 -z-10">
-          <Vortex className="opacity-100" />
-        </div>
-      )}
-      
-      <div className={cn(
-        isHeader ? 'text-center' : ''
-      )}>
-        {chars.map((char, index) => (
-          <span
-            key={`${char}-${index}`}
-            className={cn(
-              'inline-block relative',
-              'font-display tracking-wider',
-              isHeader ? 'text-3xl md:text-4xl' : 'text-6xl md:text-8xl lg:text-9xl',
-              char === ' ' ? 'mx-2' : ''
-            )}
-            style={{ 
-              animationDelay: `${index * 0.1}s`,
-              animationDuration: `${2 + Math.random() * 2}s`
-            }}
-          >
-            {char}
-            <span 
-              className={cn(
-                "absolute top-0 left-0 w-full h-full animate-glitter opacity-0",
-                "mix-blend-overlay" // Use Tailwind class instead of style
-              )}
-              style={{ 
-                animationDelay: `${index * 0.1}s`
-              }}
-            >
-              {char}
-            </span>
-          </span>
-        ))}
-      </div>
-    </motion.div>
+      {Array.from(name).map((letter, index) => (
+        <motion.span
+          key={`${letter}-${index}`}
+          variants={letterVariants}
+          className={cn(
+            'inline-block',
+            letter === ' ' ? 'mr-3' : ''
+          )}
+        >
+          {letter}
+        </motion.span>
+      ))}
+    </motion.h1>
   );
-}
+};
+
 export default ArtistName;
