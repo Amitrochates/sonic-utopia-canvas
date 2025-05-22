@@ -47,7 +47,7 @@ const ArtistName: React.FC<ArtistNameProps> = ({
       
       <div className={cn(
         'text-center',
-        isHeader ? 'w-full mx-auto' : ''
+        isHeader ? 'mx-auto' : ''
       )}>
         {chars.map((char, index) => (
           <span
@@ -67,7 +67,7 @@ const ArtistName: React.FC<ArtistNameProps> = ({
             <span 
               className={cn(
                 "absolute top-0 left-0 w-full h-full animate-glitter opacity-0",
-                "mix-blend-overlay" // Use Tailwind class instead of style
+                "mix-blend-overlay"
               )}
               style={{ 
                 animationDelay: `${index * 0.1}s`

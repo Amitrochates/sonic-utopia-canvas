@@ -1,4 +1,3 @@
-
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import ArtistName from '@/components/artist/ArtistName';
@@ -7,6 +6,8 @@ import AlbumSection from '@/components/sections/AlbumSection';
 import FooterSection from '@/components/sections/FooterSection';
 import Header from '@/components/layout/Header';
 import { useScrollBehavior } from '@/hooks/use-scroll-behavior';
+import { AlbumData } from '@/components/ui/album-carousel';
+import { Youtube, Soundcloud, Spotify, Apple } from 'lucide-react';
 
 // Artist data
 const ARTIST_NAME = "AADHYARAJA";
@@ -16,17 +17,33 @@ const FOOTER_IMAGE = "/lovable-uploads/7a397af9-6f6e-46f7-bf4f-0004c5207859.png"
 const FALLBACK_LOGO = "/lovable-uploads/placeholder-logo.svg"; 
 
 // Album data
-const ALBUMS = [
+const ALBUMS: AlbumData[] = [
   {
     id: "album-1",
     title: "UTOPIA",
     coverImage: "https://images.unsplash.com/photo-1496293455970-f8581aae0e3b",
     backgroundVideo: "https://assets.mixkit.co/videos/preview/mixkit-abstract-digital-waves-patterns-3447-large.mp4",
     streamingLinks: [
-      { name: "Spotify", url: "#" },
-      { name: "Apple Music", url: "#" },
-      { name: "YouTube", url: "#" },
-      { name: "SoundCloud", url: "#" }
+      { 
+        name: "Spotify", 
+        url: "#",
+        icon: <Spotify size={24} />
+      },
+      { 
+        name: "Apple Music", 
+        url: "#",
+        icon: <Apple size={24} />
+      },
+      { 
+        name: "YouTube", 
+        url: "#",
+        icon: <Youtube size={24} />
+      },
+      { 
+        name: "SoundCloud", 
+        url: "#",
+        icon: <Soundcloud size={24} />
+      }
     ]
   },
   {
@@ -35,10 +52,26 @@ const ALBUMS = [
     coverImage: "https://images.unsplash.com/photo-1460036521480-ff49c08c2781",
     backgroundVideo: "https://assets.mixkit.co/videos/preview/mixkit-psychedelic-pattern-11748-large.mp4",
     streamingLinks: [
-      { name: "Spotify", url: "#" },
-      { name: "Apple Music", url: "#" },
-      { name: "YouTube", url: "#" },
-      { name: "SoundCloud", url: "#" }
+      { 
+        name: "Spotify", 
+        url: "#",
+        icon: <Spotify size={24} />
+      },
+      { 
+        name: "Apple Music", 
+        url: "#",
+        icon: <Apple size={24} />
+      },
+      { 
+        name: "YouTube", 
+        url: "#",
+        icon: <Youtube size={24} />
+      },
+      { 
+        name: "SoundCloud", 
+        url: "#",
+        icon: <Soundcloud size={24} />
+      }
     ]
   },
   {
@@ -47,10 +80,26 @@ const ALBUMS = [
     coverImage: "https://images.unsplash.com/photo-1533923156502-be31530547c4",
     backgroundVideo: "https://assets.mixkit.co/videos/preview/mixkit-person-using-tablet-digital-effects-56985-large.mp4",
     streamingLinks: [
-      { name: "Spotify", url: "#", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Spotify_icon.svg/1982px-Spotify_icon.svg.png" },
-      { name: "Apple Music", url: "#", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Apple_Music_icon.svg/2048px-Apple_Music_icon.svg.png" },
-      { name: "YouTube", url: "#", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/1024px-YouTube_full-color_icon_%282017%29.svg.png" },
-      { name: "Soundcloud", url: "#", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Soundcloud_logo.svg/2560px-Soundcloud_logo.svg.png" }
+      { 
+        name: "Spotify", 
+        url: "#",
+        icon: <Spotify size={24} />
+      },
+      { 
+        name: "Apple Music", 
+        url: "#",
+        icon: <Apple size={24} />
+      },
+      { 
+        name: "YouTube", 
+        url: "#",
+        icon: <Youtube size={24} />
+      },
+      { 
+        name: "SoundCloud", 
+        url: "#",
+        icon: <Soundcloud size={24} />
+      }
     ]
   }
 ];
@@ -181,27 +230,21 @@ const HomePage = () => {
       
       {/* Logo Section */}
       <div ref={logoSectionRef}>
-        <LogoSection 
-          logoSrc={ARTIST_LOGO}
-          // backgroundVideoSrc="https://assets.mixkit.co/videos/preview/mixkit-woman-dancing-and-playing-with-digital-lights-32746-large.mp4"
-          // backgroundVideoSrc="./public/bg_glitch.mp4"
-        />
+        <LogoSection logoSrc={ARTIST_LOGO} />
       </div>
       
       {/* Albums Section */}
       <div ref={albumSectionRef}>
         <AlbumSection 
           albums={ALBUMS}
-          // onScrollUp={handleScrollUpFromAlbums}
-          // onScrollDown={handleScrollDownFromAlbums}
+          onScrollUp={handleScrollUpFromAlbums}
+          onScrollDown={handleScrollDownFromAlbums}
         />
       </div>
       
       {/* Footer Section */}
       <div ref={footerSectionRef}>
-        <FooterSection 
-          imageSrc={FOOTER_IMAGE}
-        />
+        <FooterSection imageSrc={FOOTER_IMAGE} />
       </div>
     </div>
   );
