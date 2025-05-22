@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { YoutubeIcon, Music, Music2, Video } from 'lucide-react';
 
 export const SpotifyIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -17,13 +18,6 @@ export const AppleMusicIcon = () => (
   </svg>
 );
 
-export const YouTubeIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="2" y="6" width="20" height="12" rx="2" stroke="white" strokeWidth="1.5" />
-    <path d="M14.5 12L10.5 10V14L14.5 12Z" stroke="white" strokeWidth="1.5" />
-  </svg>
-);
-
 export const SoundCloudIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M7 14C5.9 14 5 13.1 5 12C5 10.9 5.9 10 7 10C8.1 10 9 10.9 9 12C9 13.1 8.1 14 7 14Z" stroke="white" strokeWidth="1.5" />
@@ -36,13 +30,13 @@ export const SoundCloudIcon = () => (
 export const getStreamingIcon = (name: string) => {
   switch (name.toLowerCase()) {
     case 'spotify':
-      return <SpotifyIcon />;
+      return <Music2 size={24} />;
     case 'apple music':
-      return <AppleMusicIcon />;
+      return <Music size={24} />;
     case 'youtube':
-      return <YouTubeIcon />;
+      return <YoutubeIcon size={24} />;
     case 'soundcloud':
-      return <SoundCloudIcon />;
+      return <Music2 size={24} />;
     default:
       return <div className="w-6 h-6 bg-white rounded-full" />;
   }

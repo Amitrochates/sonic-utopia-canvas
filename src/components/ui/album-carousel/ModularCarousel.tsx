@@ -130,11 +130,11 @@ const ModularCarousel: React.FC<ModularCarouselProps> = ({
       </div>
       
       {/* CSS for hiding scrollbar */}
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
+      <style>
+        {`.scrollbar-hide::-webkit-scrollbar {
           display: none;
-        }
-      `}</style>
+        }`}
+      </style>
     </div>
   );
 };

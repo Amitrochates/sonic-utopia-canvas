@@ -3,16 +3,17 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { 
-  Youtube, 
-  Soundcloud, 
-  Spotify, 
-  Apple, 
+  YoutubeIcon, 
+  Music, 
+  Music2, 
+  Video 
 } from 'lucide-react';
+import { getStreamingIcon } from '@/assets/streaming-icons';
 
 interface StreamingLink {
   name: string;
   url: string;
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
 }
 
 interface CarouselSlideProps {
@@ -29,21 +30,6 @@ interface CarouselSlideProps {
 
 const CarouselSlide: React.FC<CarouselSlideProps> = ({ album }) => {
   const [isHovering, setIsHovering] = useState(false);
-  
-  const getStreamingIcon = (name: string) => {
-    switch (name.toLowerCase()) {
-      case 'youtube':
-        return <Youtube size={24} />;
-      case 'soundcloud':
-        return <Soundcloud size={24} />;
-      case 'spotify':
-        return <Spotify size={24} />;
-      case 'apple music':
-        return <Apple size={24} />;
-      default:
-        return <div className="w-6 h-6 bg-white rounded-full" />;
-    }
-  };
 
   return (
     <div className="relative h-screen w-screen flex items-center justify-center snap-center">

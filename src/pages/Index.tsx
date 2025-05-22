@@ -7,7 +7,7 @@ import FooterSection from '@/components/sections/FooterSection';
 import Header from '@/components/layout/Header';
 import { useScrollBehavior } from '@/hooks/use-scroll-behavior';
 import { AlbumData } from '@/components/ui/album-carousel';
-import { Youtube, Soundcloud, Spotify, Apple } from 'lucide-react';
+import { YoutubeIcon, Music2, Music } from 'lucide-react';
 
 // Artist data
 const ARTIST_NAME = "AADHYARAJA";
@@ -27,22 +27,22 @@ const ALBUMS: AlbumData[] = [
       { 
         name: "Spotify", 
         url: "#",
-        icon: <Spotify size={24} />
+        icon: <Music2 size={24} />
       },
       { 
         name: "Apple Music", 
         url: "#",
-        icon: <Apple size={24} />
+        icon: <Music size={24} />
       },
       { 
         name: "YouTube", 
         url: "#",
-        icon: <Youtube size={24} />
+        icon: <YoutubeIcon size={24} />
       },
       { 
         name: "SoundCloud", 
         url: "#",
-        icon: <Soundcloud size={24} />
+        icon: <Music2 size={24} />
       }
     ]
   },
@@ -55,22 +55,22 @@ const ALBUMS: AlbumData[] = [
       { 
         name: "Spotify", 
         url: "#",
-        icon: <Spotify size={24} />
+        icon: <Music2 size={24} />
       },
       { 
         name: "Apple Music", 
         url: "#",
-        icon: <Apple size={24} />
+        icon: <Music size={24} />
       },
       { 
         name: "YouTube", 
         url: "#",
-        icon: <Youtube size={24} />
+        icon: <YoutubeIcon size={24} />
       },
       { 
         name: "SoundCloud", 
         url: "#",
-        icon: <Soundcloud size={24} />
+        icon: <Music2 size={24} />
       }
     ]
   },
@@ -83,22 +83,22 @@ const ALBUMS: AlbumData[] = [
       { 
         name: "Spotify", 
         url: "#",
-        icon: <Spotify size={24} />
+        icon: <Music2 size={24} />
       },
       { 
         name: "Apple Music", 
         url: "#",
-        icon: <Apple size={24} />
+        icon: <Music size={24} />
       },
       { 
         name: "YouTube", 
         url: "#",
-        icon: <Youtube size={24} />
+        icon: <YoutubeIcon size={24} />
       },
       { 
         name: "SoundCloud", 
         url: "#",
-        icon: <Soundcloud size={24} />
+        icon: <Music2 size={24} />
       }
     ]
   }
